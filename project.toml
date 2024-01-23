@@ -1,11 +1,16 @@
 # Delete this file when Aptfile stops using a PPA
 
+[_]
+id="org.toolforge.panoviewer"
+schema-version="0.2"
+
 [[io.buildpacks.group]]
 id = "panoviewer/ppa-hack"
 
 [io.buildpacks.group.script]
 api = "0.9"
 inline="""
+echo "Adding ubuntuhandbook1 public key"
 echo '-----BEGIN PGP PUBLIC KEY BLOCK-----
 Comment: Hostname:
 Version: Hockeypuck 2.1.1-10-gec3b0e7
