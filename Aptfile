@@ -1,6 +1,4 @@
 # hugin-tools is missing from Ubuntu 22.04 (jammy).
-# We can use a PPA, but this should be removed once jammy stops being used to
-# build Toolforge buildpacks.
-:repo:deb https://ppa.launchpadcontent.net/ubuntuhandbook1/hugin/ubuntu jammy main
-hugin-tools
+# hugin-tools
 python3-pil
+python3-numpy
