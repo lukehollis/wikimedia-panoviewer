@@ -12,6 +12,7 @@ MD52=`echo $MD5 | cut -c1-2`
 wget -O "$TMP" "https://upload.wikimedia.org/wikipedia/commons/${MD51}/${MD52}/${FILE}"
 
 # generate tiled cube faces
+# Use static nona binary from NFS since hugin-tools is missing from Ubuntu 22.04
 MULTI=${DIR}${MD5}
 rm -rf $MULTI
-./generate.py -o "$MULTI" "$TMP"
+./generate.py --nona="$TOOL_DATA_DIR"/bin/nona -o "$MULTI" "$TMP"
