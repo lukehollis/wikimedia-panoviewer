@@ -94,7 +94,7 @@ if (!array_key_exists('p', $_GET))
               escapeshellarg(urlencode($file_name))
           ) . ' ' .
           // job name
-          escapeshellarg('pano_' . $md5);
+          escapeshellarg('pano-' . $md5);
       exec ($command, $out, $ret);
     }
     else
