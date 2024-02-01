@@ -1,5 +1,6 @@
 python3-pil
 python3-numpy
+toolforge-jobs-framework-cli
 
 # hugin-tools is missing from Ubuntu 22.04 (jammy) presumably due to a build
 # failure in libvigraimpex (LP #1960598).
