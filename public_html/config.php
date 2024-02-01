@@ -20,7 +20,6 @@ else {
 $md5 = md5($file_name);
 $cache_prefix = 'cache/' . $md5;
 $cache_file = $cache_prefix . '.jpg';
-$jobHome = '/data/project/panoviewer/public_html';
 
 // connect to database
 $ts_pw = posix_getpwuid(posix_getuid());
@@ -83,18 +82,7 @@ if (!array_key_exists('p', $_GET))
     if ($width > $max_width)
     {
       $preview = 'https://commons.wikimedia.org/w/thumb.php?w=' . $max_width . '&f=' . urlencode($file_name);
-      $command = 'toolforge jobs run ' .
-          '--image tool-panoviewer/tool-panoviewer:latest ' .
-          '--mount=all ' .
-          '--command ' . escapeshellarg(
-              'launcher ' .
-              escapeshellarg("$jobHome/multires.sh") . ' ' .
-              escapeshellarg("$jobHome/cache/") . ' ' .
-              escapeshellarg($md5) . ' ' .
-              escapeshellarg(urlencode($file_name))
-          ) . ' ' .
-          // job name
-          escapeshellarg('pano-' . $md5);
+      $command = 'jsub -mem 2048m -N ' . escapeshellarg('pano_' . $md5) . ' -once ./multires.sh cache/ ' . escapeshellarg($md5) . ' ' . escapeshellarg(urlencode($file_name));
       exec ($command, $out, $ret);
     }
     else
