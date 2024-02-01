@@ -23,11 +23,9 @@ $cache_file = $cache_prefix . '.jpg';
 $jobHome = '/data/project/panoviewer/public_html';
 
 // connect to database
-$db = mysqli_connect(
-    "p:commonswiki.labsdb",
-    $_ENV['TOOL_REPLICA_USER'],
-    $_ENV['TOOL_REPLICA_PASSWORD'],
-    "commonswiki_p");
+$ts_pw = posix_getpwuid(posix_getuid());
+$ts_mycnf = parse_ini_file($ts_pw['dir'] . "/replica.my.cnf");
+$db = mysqli_connect("p:commonswiki.labsdb", $ts_mycnf['user'], $ts_mycnf['password'], "commonswiki_p");
 unset($ts_mycnf, $ts_pw);
 
 // get last upload date and image dimensions from database
