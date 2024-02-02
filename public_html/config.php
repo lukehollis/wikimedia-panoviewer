@@ -84,7 +84,7 @@ if (!array_key_exists('p', $_GET))
     if ($width > $max_width)
     {
       $preview = 'https://commons.wikimedia.org/w/thumb.php?w=' . $max_width . '&f=' . urlencode($file_name);
-      $command = 'toolforge jobs run ' .
+      $command = 'bin/toolforge jobs run ' .
           '--image tool-panoviewer/tool-panoviewer:latest ' .
           '--mount=all ' .
           '--command ' . escapeshellarg(
