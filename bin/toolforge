@@ -14,22 +14,26 @@ if [ $1 != "jobs" ]; then
   dieUsage
 fi
 
-if [ $2 != '--image' ]; then
+if [ $2 != "run" ]; then
   dieUsage
 fi
 
-image="$3"
-
-if [ $4 != '--mount=all' ];then
+if [ $3 != '--image' ]; then
   dieUsage
 fi
 
-if [ $5 != '--command' ]; then
+image="$4"
+
+if [ $5 != '--mount=all' ];then
   dieUsage
 fi
 
-command="$6"
-name="$7"
+if [ $6 != '--command' ]; then
+  dieUsage
+fi
+
+command="$7"
+name="$8"
 dataDir="${TOOL_DATA_DIR:-$HOME}"
 
 jq -n --arg name "$name" \
@@ -38,7 +42,7 @@ jq -n --arg name "$name" \
   '{name: $name, cmd: $command, imagename: $image, mount: "all"}' | \
   curl -X POST \
   -H "content-type: application/json" \
-  --data - \
+  --data @- \
   --insecure --silent \
   --cert "$dataDir/.toolskube/client.crt" \
   --key "$dataDir/.toolskube/client.key" \
