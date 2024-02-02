@@ -20,12 +20,14 @@ else {
 $md5 = md5($file_name);
 $cache_prefix = 'cache/' . $md5;
 $cache_file = $cache_prefix . '.jpg';
+$jobHome = getenv('TOOL_DATA_DIR') . '/public_html';
 
 // connect to database
-$ts_pw = posix_getpwuid(posix_getuid());
-$ts_mycnf = parse_ini_file($ts_pw['dir'] . "/replica.my.cnf");
-$db = mysqli_connect("p:commonswiki.labsdb", $ts_mycnf['user'], $ts_mycnf['password'], "commonswiki_p");
-unset($ts_mycnf, $ts_pw);
+$db = mysqli_connect(
+    "p:commonswiki.labsdb",
+    getenv('TOOL_REPLICA_USER'),
+    getenv('TOOL_REPLICA_PASSWORD'),
+    "commonswiki_p");
 
 // get last upload date and image dimensions from database
 $sql = sprintf("SELECT img_timestamp, img_width, img_height FROM image WHERE img_name = '%s'", mysqli_real_escape_string($db, $file_name));
@@ -82,7 +84,18 @@ if (!array_key_exists('p', $_GET))
     if ($width > $max_width)
     {
       $preview = 'https://commons.wikimedia.org/w/thumb.php?w=' . $max_width . '&f=' . urlencode($file_name);
-      $command = 'jsub -mem 2048m -N ' . escapeshellarg('pano_' . $md5) . ' -once ./multires.sh cache/ ' . escapeshellarg($md5) . ' ' . escapeshellarg(urlencode($file_name));
+      $command = 'toolforge jobs run ' .
+          '--image tool-panoviewer/tool-panoviewer:latest ' .
+          '--mount=all ' .
+          '--command ' . escapeshellarg(
+              'launcher ' .
+              escapeshellarg("$jobHome/multires.sh") . ' ' .
+              escapeshellarg("$jobHome/cache/") . ' ' .
+              escapeshellarg($md5) . ' ' .
+              escapeshellarg(urlencode($file_name))
+          ) . ' ' .
+          // job name
+          escapeshellarg('pano-' . $md5);
       exec ($command, $out, $ret);
     }
     else

@@ -1,0 +1,45 @@
+#!/bin/bash
+
+usage() {
+  echo "Fake toolforge CLI"
+  echo "Usage: toolforge jobs run --image <image> --mount=all --command <command> <name>"
+}
+
+dieUsage() {
+  usage 1>&2
+  exit 1
+}
+
+if [ $1 != "jobs" ]; then
+  dieUsage
+fi
+
+if [ $2 != '--image' ]; then
+  dieUsage
+fi
+
+image="$3"
+
+if [ $4 != '--mount=all' ];then
+  dieUsage
+fi
+
+if [ $5 != '--command' ]; then
+  dieUsage
+fi
+
+command="$6"
+name="$7"
+dataDir="${TOOL_DATA_DIR:-$HOME}"
+
+jq -n --arg name "$name" \
+  --arg command "$command" \
+  --arg image "$image" \
+  '{name: $name, cmd: $command, imagename: $image, mount: "all"}' | \
+  curl -X POST \
+  -H "content-type: application/json" \
+  --data - \
+  --insecure --silent \
+  --cert "$dataDir/.toolskube/client.crt" \
+  --key "$dataDir/.toolskube/client.key" \
+  https://api.svc.tools.eqiad1.wikimedia.cloud:30003/jobs/api/v1/jobs/
