@@ -1,0 +1,2 @@
+backend: kubernetes
+health-check-path: /health.php
